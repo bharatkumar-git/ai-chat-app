@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
+
 import Landing from "./pages/Landing";
 import ChatPage from "./pages/ChatPage";
 import {
@@ -7,11 +8,6 @@ import {
   createSession as apiCreateSession,
 } from "./utils/api";
 import ThemeToggle from "./components/ThemeToggle";
-
-/**
- * Top-level App: holds global UI state (sessions list, theme, sidebar collapsed).
- * For simplicity we fetch sessions on mount and pass handlers down via props.
- */
 
 export default function App() {
   const [sessions, setSessions] = useState([]);
@@ -49,6 +45,9 @@ export default function App() {
       const sessionId = res.sessionId;
       // reload sessions and navigate to new session
       await loadSessions();
+      if (typeof window !== "undefined" && window.innerWidth < 640) {
+        setSidebarCollapsed(true);
+      }
       if (navigate) navigate(`/chat/${sessionId}`);
     } catch (err) {
       console.error("Failed to create session", err);
@@ -58,37 +57,46 @@ export default function App() {
   return (
     <div className="app-container flex flex-col min-h-screen">
       <div className="flex-1 flex flex-col">
-        <div className="flex flex-col sm:flex-row items-center justify-between p-3 border-b bg-white dark:bg-gray-800 gap-2 sm:gap-0">
-          <div className="flex items-center gap-2 sm:gap-4">
-            <button
-              onClick={() => setSidebarCollapsed(false)}
-              className="sm:hidden p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
-              title="Open sidebar"
+        <div className="sm:hidden flex items-center justify-between p-3 border-b bg-white dark:bg-gray-800 gap-2">
+          <button
+            onClick={() => setSidebarCollapsed(false)}
+            className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+            title="Open sidebar"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-            <h1 className="text-lg font-semibold">AI Chat App</h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <ThemeToggle
-              theme={theme}
-              onToggle={() =>
-                setTheme((prev) => (prev === "dark" ? "light" : "dark"))
-              }
-            />
-          </div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+          <h1 className="text-lg font-semibold flex-1 text-center">
+            AI Chat App
+          </h1>
+          <ThemeToggle
+            theme={theme}
+            onToggle={() =>
+              setTheme((prev) => (prev === "dark" ? "light" : "dark"))
+            }
+          />
+        </div>
+
+        {/* desktop: title on left - toggle on right */}
+        <div className="hidden sm:flex items-center justify-between p-3 border-b bg-white dark:bg-gray-800">
+          <h1 className="text-lg font-semibold">AI Chat App</h1>
+          <ThemeToggle
+            theme={theme}
+            onToggle={() =>
+              setTheme((prev) => (prev === "dark" ? "light" : "dark"))
+            }
+          />
         </div>
 
         <Routes>

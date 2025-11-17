@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function Sidebar({
   sessions,
   activeId,
@@ -25,7 +23,13 @@ export default function Sidebar({
         <div className="flex items-center gap-2">
           {collapsed ? (
             <button
-              onClick={onNew}
+              onClick={() => {
+                onNew();
+                // Collapse sidebar on mobile after new chat
+                if (typeof window !== "undefined" && window.innerWidth < 768) {
+                  onToggleCollapse();
+                }
+              }}
               className="p-2 bg-green-600 text-white rounded hover:bg-green-700 text-xs"
               title="New Chat"
             >
@@ -33,7 +37,13 @@ export default function Sidebar({
             </button>
           ) : (
             <button
-              onClick={onNew}
+              onClick={() => {
+                onNew();
+                // Collapse sidebar on mobile after new chat
+                if (typeof window !== "undefined" && window.innerWidth < 768) {
+                  onToggleCollapse();
+                }
+              }}
               className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
             >
               New Chat

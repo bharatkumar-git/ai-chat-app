@@ -1,13 +1,11 @@
-/**
- * Mock/demo Express server (server/index.js)
+/*
+ * Mock/demo Express server (index.js)
  * - In-memory sessions and messages (no DB)
  * - Endpoints:
  *   GET  /api/sessions
  *   POST /api/sessions
  *   GET  /api/sessions/:sessionId
  *   POST /api/sessions/:sessionId/message
- *
- * Simple, readable JS — basic/medium level.
  */
 
 const express = require("express");
@@ -112,19 +110,36 @@ app.post("/api/sessions/:sessionId/message", (req, res) => {
     low.includes("cost") ||
     low.includes("compare")
   ) {
-    // Return a mock table response
+    // Return a mock table response and generate a short summary description
+    const rows = [
+      ["Streaming", "$50", "$20", "$30"],
+      ["Phone", "$60", "$40", "$20"],
+      ["Coffee", "$100", "$40", "$60"],
+    ];
+
+    // Parse monthly savings from the table rows (assume last column is like "$30")
+    const savings = rows.map((r) => {
+      const raw = (r[3] || "").toString().replace(/[^0-9.-]/g, "");
+      const v = parseFloat(raw) || 0;
+      return { item: r[0], value: v };
+    });
+
+    const totalSavings = savings.reduce((sum, s) => sum + s.value, 0);
+    const biggest = savings.reduce(
+      (best, s) => (s.value > best.value ? s : best),
+      savings[0] || { item: "", value: 0 }
+    );
+
+    const description = `Summary: switching the recommended options saves approximately $${totalSavings} per month. Biggest saving: ${biggest.item} ($${biggest.value}/mo). See details in the table below.`;
+
     assistantMsg = {
       id: uuid(),
       role: "assistant",
       type: "table",
-      description: "Below is a structured comparison based on your query.",
+      description,
       table: {
         columns: ["Item", "Current", "Recommended", "Monthly Savings"],
-        rows: [
-          ["Streaming", "$50", "$20", "$30"],
-          ["Phone", "$60", "$40", "$20"],
-          ["Coffee", "$100", "$40", "$60"],
-        ],
+        rows,
       },
       createdAt: now(),
     };

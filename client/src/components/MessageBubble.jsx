@@ -6,15 +6,9 @@ import {
   AiFillDislike,
 } from "react-icons/ai";
 
-/**
- * Renders both user and assistant messages.
- * Assistant may be type 'text' or 'table'.
- */
-
 function TableRenderer({ description, table }) {
   return (
     <div className="bg-white dark:bg-gray-700 p-3 rounded shadow-sm">
-      {description && <p className="mb-3 text-sm">{description}</p>}
       <div className="overflow-auto">
         <table className="min-w-full text-sm">
           <thead>
@@ -39,6 +33,11 @@ function TableRenderer({ description, table }) {
           </tbody>
         </table>
       </div>
+      {description && (
+        <p className="mt-3 text-sm text-gray-700 dark:text-gray-300">
+          {description}
+        </p>
+      )}
     </div>
   );
 }

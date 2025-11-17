@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import { postMessage, fetchSession } from "../utils/api";
@@ -35,25 +35,6 @@ export default function ChatWindow({ session, onSend }) {
       setLoading(false);
     }
   };
-
-  //   const handleRename = async () => {
-  //     const newTitle = prompt("New title", currentSession.title || "");
-  //     if (!newTitle) return;
-  //     // Simple PATCH directly from client (fetch)
-  //     try {
-  //       await fetch(`/api/sessions/${currentSession.sessionId}`, {
-  //         method: "PATCH",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({ title: newTitle }),
-  //       });
-  //       const refreshed = await fetchSession(currentSession.sessionId);
-  //       setCurrentSession(refreshed);
-  //       if (typeof onRename === "function")
-  //         onRename(currentSession.sessionId, newTitle);
-  //     } catch (err) {
-  //       console.error("Rename failed", err);
-  //     }
-  //   };
 
   return (
     <div className="h-full flex flex-col">
