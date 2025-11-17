@@ -2,7 +2,6 @@
   "name": "server",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "server": "node index.js",
     "dev": "nodemon index.js"
